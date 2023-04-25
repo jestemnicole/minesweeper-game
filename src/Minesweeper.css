@@ -5,7 +5,26 @@
     margin-top: 1px;
     margin-left: 1px;
     border-width: 1px;
-    
+}
+
+.matrix-button-filled {
+    background-color: rgb(186, 186, 186);
+    height : 40px;
+    width: 40px;
+    margin-top: 1px;
+    margin-left: 1px;
+    border-width: 1px;
+}
+
+
+.matrix-disabled-button {
+    background-color: white;
+    height : 40px;
+    width: 40px;
+    margin-top: 1px;
+    margin-left: 1px;
+    border-width: 1px;
+    cursor: not-allowed;
 }
 
 .matrix-row {
