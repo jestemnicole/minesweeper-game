@@ -18,7 +18,7 @@ function generateBombLocations(){
 
     for (let row = 0; row < SIZE_OF_BOARD; row++){
         for (let col = 0; col < SIZE_OF_BOARD; col++){
-            if (countBombs < MAX_BOMBS && Math.random() >= 0.75){
+            if (countBombs < MAX_BOMBS && Math.random() >= 0.7){
                 bombLocations[row][col] = 1;
                 countBombs++;
             }
@@ -190,7 +190,11 @@ export default function Minesweeper () {
             let buttons = [];
         
             for (let c = 0; c < SIZE_OF_BOARD; c++) {
-               buttons.push(<button key={`${r} + ${c}`} onContextMenu={(event) => toggleFlag(event, r, c)} onClick={() => onSquarePressed(r, c)} disabled={isGameOver ? true : false} className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c] !== 0 ? board[r][c] : ""}</button>);
+               buttons.push(<button key={`${r} + ${c}`} 
+                                    onContextMenu={(event) => toggleFlag(event, r, c)} 
+                                    onClick={() => onSquarePressed(r, c)} 
+                                    disabled={isGameOver ? true : false} 
+                                    className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c] !== 0 ? board[r][c] : ""}</button>);
             }
         
             rows.push(<div key={r} id={`${r}`}className="matrix-row">{buttons}</div>);
