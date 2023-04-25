@@ -76,9 +76,6 @@ let numBombNeighbors = generateNumBombNeighbors(bombLocations);
 
 export default function Minesweeper () {
 
-    //const [bombLocations, setBombLocations] = useState(initialBombLocations);
-    //const [board, setBoard] = useState(initialBoard);
-    
     const [isGameOver, setIsGameOver] = useState(false);
     const [board, setBoard] = useState(clearBoard);
 
@@ -89,18 +86,27 @@ export default function Minesweeper () {
         setBoard(clearBoard);
     }
 
-    function onSquarePressed(r, c) {
-
-        if (board[r][c] === "F") return;
-        
-         if (bombLocations[r][c] === 1){
-            let b = [];
-            for (let i = 0; i < SIZE_OF_BOARD; i++){
+    function copyBoard(){
+    
+        let b = [];
+        for (let i = 0; i < SIZE_OF_BOARD; i++){
             b[i] = [];
             for (let j = 0; j < SIZE_OF_BOARD; j++){
                 b[i][j] = board[i][j];
             }
-            }
+        }
+    
+        return b;
+    }
+
+
+
+    function onSquarePressed(r, c) {
+
+        if (board[r][c] === "F") return;
+
+         if (bombLocations[r][c] === 1){
+            let b = copyBoard();
             b[r][c] = "💣";
             setBoard(b);
             setIsGameOver(true);
@@ -108,17 +114,67 @@ export default function Minesweeper () {
         }
 
         if (numBombNeighbors[r][c] !== 0){
-            let b = [];
-            for (let i = 0; i < SIZE_OF_BOARD; i++){
-            b[i] = [];
-            for (let j = 0; j < SIZE_OF_BOARD; j++){
-                b[i][j] = board[i][j];
-            }
-            }
+            let b = copyBoard();
             b[r][c] = numBombNeighbors[r][c];
             setBoard(b);
             return;
         }
+
+        // else no flag, no bomb, and no number
+        // run a BFS to find perimeter 
+        let queue = [];
+        // explore each direction until we reach a position on the board
+        // occupied by a number
+
+        queue.push({r, c});
+        let visited = [];
+        let squaresToReveal = [];
+        
+        for (let i = 0; i < SIZE_OF_BOARD; i++){
+            visited[i] = [];
+            for (let j = 0; j < SIZE_OF_BOARD; j++){
+                visited[i][j] = false;
+            }
+        }
+        visited[r][c] = true;
+        //squaresToReveal.push({r, c});
+
+        while (queue.length > 0){
+           const indices = queue[0]; // take out oldest 
+           queue.shift();
+           squaresToReveal.push({row : indices.r, col : indices.c});
+
+           if (numBombNeighbors[indices.r][indices.c] !== 0) continue; // stop here
+            // else keep exploring 
+            const directions = [{r_offset : -1, c_offset : -1}, 
+                {r_offset : -1, c_offset :  0}, 
+                {r_offset : -1, c_offset :  1}, 
+                {r_offset :  0, c_offset : -1}, 
+                {r_offset :  0, c_offset :  1},
+                {r_offset :  1, c_offset : -1}, 
+                {r_offset :  1, c_offset :  0}, 
+                {r_offset :  1, c_offset :  1}]
+                
+            directions.forEach(direction => {
+                let n_row = indices.r + direction.r_offset;
+                let n_col = indices.c + direction.c_offset;
+                if (inBounds(n_row, n_col) && visited[n_row][n_col] === false){
+                    if (bombLocations[n_row][n_col] !== 1){ // dont want to reveal bombs
+                        //let foundNonZero = numBombNeighbors[n_row][n_col] !== 0;
+                        queue.push({r : n_row, c : n_col});
+                        visited[n_row][n_col] = true;
+                        squaresToReveal.push({row : n_row, col : n_col});
+                    }
+                }
+            });
+        }
+
+        let b = copyBoard();
+        squaresToReveal.forEach(squareToReveal => {
+            b[squareToReveal.row][squareToReveal.col] = numBombNeighbors[squareToReveal.row][squareToReveal.col];
+
+        });
+        setBoard(b);
     }
 
     function toggleFlag(event, r, c){
@@ -126,19 +182,11 @@ export default function Minesweeper () {
         
         if (board[r][c] !== "" && board[r][c] !== "F") return;
 
-        let b = [];
-        for (let i = 0; i < SIZE_OF_BOARD; i++){
-        b[i] = [];
-        for (let j = 0; j < SIZE_OF_BOARD; j++){
-            b[i][j] = board[i][j];
-        }
-        }
+        let b = copyBoard();
 
         b[r][c] = board[r][c] === "F" ? "" : "F";
         setBoard(b);
         
-        
-
     }
 
     function Board(){
