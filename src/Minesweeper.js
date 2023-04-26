@@ -2,7 +2,9 @@ import {React, useState} from 'react'
 import './Minesweeper.css'
 
 const MAX_BOMBS = 30;
-const SIZE_OF_BOARD = 10;
+const NUM_COLS = 10;
+const NUM_ROWS = 10;
+
 const directions = [{r_offset : -1, c_offset : -1},  // top left
                     {r_offset : -1, c_offset :  0},  // top
                     {r_offset : -1, c_offset :  1},  // top right
@@ -13,12 +15,12 @@ const directions = [{r_offset : -1, c_offset : -1},  // top left
                     {r_offset :  1, c_offset :  1}]; // bottom right
 
 function generateBombLocations(){
-    let bombLocations = Array.from(Array(SIZE_OF_BOARD), () => new Array(SIZE_OF_BOARD).fill(0));
+    let bombLocations = Array.from(Array(NUM_ROWS), () => new Array(NUM_COLS).fill(0));
     let countBombs = 0; 
 
-    for (let row = 0; row < SIZE_OF_BOARD; row++){
-        for (let col = 0; col < SIZE_OF_BOARD; col++){
-            if (countBombs < MAX_BOMBS && Math.random() >= 0.7){
+    for (let row = 0; row < NUM_ROWS; row++){
+        for (let col = 0; col < NUM_COLS; col++){
+            if (countBombs < MAX_BOMBS && Math.random() >= 0.85){
                 bombLocations[row][col] = 1;
                 countBombs++;
             }
@@ -30,7 +32,7 @@ function generateBombLocations(){
 }
 
 function inBounds(row, col){
-    if (row >= 0 && row < SIZE_OF_BOARD && col >= 0 && col < SIZE_OF_BOARD) return true;
+    if (row >= 0 && row < NUM_ROWS && col >= 0 && col < NUM_COLS) return true;
     
     return false;
     
@@ -38,10 +40,10 @@ function inBounds(row, col){
 
 function generateNumBombNeighbors(bombLocations){
 
-    let board = Array.from(Array(SIZE_OF_BOARD), () => new Array(SIZE_OF_BOARD).fill(0));;
+    let board = Array.from(Array(NUM_ROWS), () => new Array(NUM_COLS).fill(0));;
         
-        for (let row = 0; row < SIZE_OF_BOARD; row++){
-            for (let col = 0; col < SIZE_OF_BOARD; col++){
+        for (let row = 0; row < NUM_ROWS; row++){
+            for (let col = 0; col < NUM_COLS; col++){
                 if (bombLocations[row][col] === 1) continue;
 
                 let countBombs = 0;
@@ -61,9 +63,9 @@ function generateNumBombNeighbors(bombLocations){
 
 function clearBoard(){
     let b = [];
-        for (let i = 0; i < SIZE_OF_BOARD; i++){
+        for (let i = 0; i < NUM_ROWS; i++){
             b[i] = [];
-            for (let j = 0; j < SIZE_OF_BOARD; j++){
+            for (let j = 0; j < NUM_COLS; j++){
                 b[i][j] = "";
             }
         }
@@ -88,9 +90,9 @@ export default function Minesweeper () {
     function copyBoard(){
     
         let b = [];
-        for (let i = 0; i < SIZE_OF_BOARD; i++){
+        for (let i = 0; i < NUM_ROWS; i++){
             b[i] = [];
-            for (let j = 0; j < SIZE_OF_BOARD; j++){
+            for (let j = 0; j < NUM_COLS; j++){
                 b[i][j] = board[i][j];
             }
         }
@@ -106,9 +108,9 @@ export default function Minesweeper () {
         let visited = [];
         let squaresToReveal = [];
         
-        for (let i = 0; i < SIZE_OF_BOARD; i++){
+        for (let i = 0; i < NUM_ROWS; i++){
             visited[i] = [];
-            for (let j = 0; j < SIZE_OF_BOARD; j++){
+            for (let j = 0; j < NUM_COLS; j++){
                 visited[i][j] = false;
             }
         }
@@ -140,6 +142,7 @@ export default function Minesweeper () {
 
     function onSquarePressed(r, c) {
 
+        // todo : check whether the user won
         if (board[r][c] === "🚩") return;
         let b = copyBoard();
          
@@ -186,10 +189,10 @@ export default function Minesweeper () {
     function Board(){
         
         let rows = []
-        for (let r = 0; r < SIZE_OF_BOARD; r++) {
+        for (let r = 0; r < NUM_ROWS; r++) {
             let buttons = [];
         
-            for (let c = 0; c < SIZE_OF_BOARD; c++) {
+            for (let c = 0; c < NUM_COLS; c++) {
                buttons.push(<button key={`${r} + ${c}`} 
                                     onContextMenu={(event) => toggleFlag(event, r, c)} 
                                     onClick={() => onSquarePressed(r, c)} 
