@@ -1,9 +1,9 @@
 import {React, useState} from 'react'
 import './Minesweeper.css'
 
-const MAX_BOMBS = 30;
-const NUM_COLS = 10;
-const NUM_ROWS = 10;
+const MAX_BOMBS = 40;
+const NUM_COLS = 18;
+const NUM_ROWS = 14;
 
 const directions = [{r_offset : -1, c_offset : -1},  // top left
                     {r_offset : -1, c_offset :  0},  // top
@@ -14,15 +14,17 @@ const directions = [{r_offset : -1, c_offset : -1},  // top left
                     {r_offset :  1, c_offset :  0},  // bottom
                     {r_offset :  1, c_offset :  1}]; // bottom right
 
-                    // todo: need to ensure there is only 1 unique solution;
-                    // otherwise, the game allows for guessing which is bad
+
+// todo: minimize guessing
+// ensure a good distribution 
+
 function generateBombLocations(){
     let bombLocations = Array.from(Array(NUM_ROWS), () => new Array(NUM_COLS).fill(0));
     let countBombs = 0; 
 
     for (let row = 0; row < NUM_ROWS; row++){
         for (let col = 0; col < NUM_COLS; col++){
-            if (countBombs < MAX_BOMBS && Math.random() >= 0.9){
+            if (countBombs < MAX_BOMBS && Math.random() >= 0.8){
                 bombLocations[row][col] = 1;
                 countBombs++;
             }
@@ -199,7 +201,7 @@ export default function Minesweeper () {
                                     onContextMenu={(event) => toggleFlag(event, r, c)} 
                                     onClick={() => onSquarePressed(r, c)} 
                                     disabled={isGameOver ? true : false} 
-                                    className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c] !== 0 ? board[r][c] : ""}</button>);
+                                    className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c]}</button>);
             }
         
             rows.push(<div key={r} id={`${r}`}className="matrix-row">{buttons}</div>);

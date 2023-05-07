@@ -1,28 +1,22 @@
 .matrix-button {
-    background-color: white;
-    height : 40px;
-    width: 40px;
-    margin-top: 1px;
-    margin-left: 1px;
+    background-color: rgb(255, 255, 255);
+    height : 30px;
+    width: 30px;
     border-width: 1px;
 }
 
 .matrix-button-filled {
     background-color: rgb(186, 186, 186);
-    height : 40px;
-    width: 40px;
-    margin-top: 1px;
-    margin-left: 1px;
+    height : 30px;
+    width: 30px;
     border-width: 1px;
 }
 
 
 .matrix-disabled-button {
     background-color: white;
-    height : 40px;
-    width: 40px;
-    margin-top: 1px;
-    margin-left: 1px;
+    height : 30px;
+    width: 30px;
     border-width: 1px;
     cursor: not-allowed;
 }
@@ -33,7 +27,6 @@
 }
 .matrix-button:hover {
     background-color: gainsboro;
-    cursor: pointer;
 }
 .title{
     font-family: 'Times New Roman';
