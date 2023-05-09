@@ -1,4 +1,4 @@
-import {React, useState} from 'react'
+import {React, useState, useEffect} from 'react'
 import './Minesweeper.css'
 
 const MAX_BOMBS = 40;
@@ -15,22 +15,22 @@ const directions = [{r_offset : -1, c_offset : -1},  // top left
                     {r_offset :  1, c_offset :  1}]; // bottom right
 
 
-// todo: minimize guessing
-// ensure a good distribution 
 
 function generateBombLocations(){
     let bombLocations = Array.from(Array(NUM_ROWS), () => new Array(NUM_COLS).fill(0));
     let countBombs = 0; 
 
+    while (countBombs < MAX_BOMBS){
     for (let row = 0; row < NUM_ROWS; row++){
         for (let col = 0; col < NUM_COLS; col++){
-            if (countBombs < MAX_BOMBS && Math.random() >= 0.8){
+            if (countBombs < MAX_BOMBS && Math.random() >= 0.9){
                 bombLocations[row][col] = 1;
                 countBombs++;
             }
             
         }
     }
+}
 
     return bombLocations;
 }
@@ -82,12 +82,20 @@ let numBombNeighbors = generateNumBombNeighbors(bombLocations);
 export default function Minesweeper () {
 
     const [isGameOver, setIsGameOver] = useState(false);
+    const [isWon, setIsWon] = useState(false);
     const [board, setBoard] = useState(clearBoard);
+
+    useEffect(() => {
+        if (checkIfWon()){
+            setIsWon(true);
+        }
+    }, [board]);
 
     function reset(){
         bombLocations = generateBombLocations();
         numBombNeighbors = generateNumBombNeighbors(bombLocations);
         setIsGameOver(false);
+        setIsWon(false);
         setBoard(clearBoard);
     }
 
@@ -144,9 +152,22 @@ export default function Minesweeper () {
         return squaresToReveal;
     }
 
+    function checkIfWon(){
+
+        for (let i = 0; i < NUM_ROWS; i++){
+            for (let j = 0; j < NUM_COLS; j++){
+                if (board[i][j] === "🚩" && bombLocations[i][j] !== 1) return false;
+                if (board[i][j] === "" && bombLocations[i][j] !== 1) return false;
+        }
+    }
+
+        return true;
+    }
+
+
     function onSquarePressed(r, c) {
 
-        // todo : check whether the user won
+       
         if (board[r][c] === "🚩") return;
         let b = copyBoard();
          
@@ -159,23 +180,18 @@ export default function Minesweeper () {
 
         if (numBombNeighbors[r][c] !== 0){
             b[r][c] = numBombNeighbors[r][c];
-            setBoard(b);
-            return;
+            
+           
+        }else {
+            let squaresToReveal = findSquaresToReveal(r, c);
+            squaresToReveal.forEach(squareToReveal => {
+                b[squareToReveal.row][squareToReveal.col] = numBombNeighbors[squareToReveal.row][squareToReveal.col];
+    
+            });
         }
 
-        // else no flag, no bomb, and no number
-        // run a BFS to find perimeter 
-        // explore each direction until we reach a position on the board
-        // occupied by a number that isn't 0 and not a bomb
-
-        let squaresToReveal = findSquaresToReveal(r, c);
-        squaresToReveal.forEach(squareToReveal => {
-            
-            b[squareToReveal.row][squareToReveal.col] = numBombNeighbors[squareToReveal.row][squareToReveal.col];
-
-        });
-
         setBoard(b);
+        
     }
 
     function toggleFlag(event, r, c){
@@ -212,7 +228,9 @@ export default function Minesweeper () {
 
     return (
         <div>
-            <p className={"title"}>{isGameOver ? "GAME OVER" : "MINESWEEPER"}</p>
+            <p className={"title"}>
+                {isGameOver ? "GAME OVER" : isWon ? "YOU WIN" : "MINESWEEPER"}
+            </p>
             <Board></Board>
             <button onClick={reset}>Retry</button>
         </div>
