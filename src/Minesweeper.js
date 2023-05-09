@@ -169,6 +169,7 @@ export default function Minesweeper () {
         if (board[r][c] === "🚩") return;
         let b = copyBoard();
          
+        // todo: add dramatic explosion when user clicks on a bomb
         if (bombLocations[r][c] === 1){
             b[r][c] = "💣";
             setBoard(b);
