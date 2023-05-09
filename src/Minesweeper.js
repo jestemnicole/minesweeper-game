@@ -85,10 +85,9 @@ export default function Minesweeper () {
     const [isWon, setIsWon] = useState(false);
     const [board, setBoard] = useState(clearBoard);
 
+
     useEffect(() => {
-        if (checkIfWon()){
-            setIsWon(true);
-        }
+        setIsWon(checkIfWon);
     }, [board]);
 
     function reset(){
@@ -129,13 +128,12 @@ export default function Minesweeper () {
         visited[r][c] = true;
     
         while (queue.length > 0){
-           const indices = queue[0]; // take out oldest 
+           const indices = queue[0];  
            queue.shift();
            squaresToReveal.push({row : indices.r, col : indices.c});
 
-           if (numBombNeighbors[indices.r][indices.c] !== 0) continue; // stop here
-            // else keep exploring 
-                
+           if (numBombNeighbors[indices.r][indices.c] !== 0) continue;
+            
             directions.forEach(direction => {
                 let n_row = indices.r + direction.r_offset;
                 let n_col = indices.c + direction.c_offset;
@@ -158,10 +156,10 @@ export default function Minesweeper () {
             for (let j = 0; j < NUM_COLS; j++){
                 if (board[i][j] === "🚩" && bombLocations[i][j] !== 1) return false;
                 if (board[i][j] === "" && bombLocations[i][j] !== 1) return false;
+            }
         }
-    }
 
-        return true;
+        return true; // only squares left are ones with bombs behind them
     }
 
 
@@ -180,12 +178,13 @@ export default function Minesweeper () {
 
         if (numBombNeighbors[r][c] !== 0){
             b[r][c] = numBombNeighbors[r][c];
-            
-           
         }else {
             let squaresToReveal = findSquaresToReveal(r, c);
+            let row, col;
             squaresToReveal.forEach(squareToReveal => {
-                b[squareToReveal.row][squareToReveal.col] = numBombNeighbors[squareToReveal.row][squareToReveal.col];
+                row = squareToReveal.row;
+                col = squareToReveal.col;
+                b[row][col] = numBombNeighbors[row][col];
     
             });
         }
