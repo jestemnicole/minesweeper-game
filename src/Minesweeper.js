@@ -79,12 +79,14 @@ function clearBoard(){
 let bombLocations = generateBombLocations();
 let numBombNeighbors = generateNumBombNeighbors(bombLocations);
 
+export const getBombLocations = () => bombLocations;
+export const getNumBombNeighbors = () => numBombNeighbors;
+
 export default function Minesweeper () {
 
     const [isGameOver, setIsGameOver] = useState(false);
     const [isWon, setIsWon] = useState(false);
     const [board, setBoard] = useState(clearBoard);
-
 
     useEffect(() => {
         setIsWon(checkIfWon);
@@ -213,7 +215,7 @@ export default function Minesweeper () {
             let buttons = [];
         
             for (let c = 0; c < NUM_COLS; c++) {
-               buttons.push(<button key={`${r} + ${c}`} 
+               buttons.push(<button data-testid={`${r} + ${c}`} key={`${r} + ${c}`} 
                                     onContextMenu={(event) => toggleFlag(event, r, c)} 
                                     onClick={() => onSquarePressed(r, c)} 
                                     disabled={isGameOver ? true : false} 
@@ -228,7 +230,7 @@ export default function Minesweeper () {
 
     return (
         <div>
-            <p className={"title"}>
+            <p data-testid="state of game" className={"title"}>
                 {isGameOver ? "GAME OVER" : isWon ? "YOU WIN" : "MINESWEEPER"}
             </p>
             <Board></Board>

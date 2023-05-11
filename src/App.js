@@ -4,7 +4,7 @@ import Minesweeper from './Minesweeper';
 function App() {
   return (
     <div className="App">
-      <Minesweeper></Minesweeper>
+      <Minesweeper/>
     </div>
   );
 }
