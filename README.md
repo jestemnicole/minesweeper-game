@@ -1,5 +1,7 @@
 # Minesweeper Game
-A classic game created with ReactJS
+That one game with the bombs
 
 ### Executing program
-Clone this repo and run ```npm start```
+Clone this repo
+install dependencies with ```npm install``` 
+run ```npm start```
