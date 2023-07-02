@@ -2,6 +2,6 @@
 That one game with the bombs
 
 ### Executing program
-Clone this repo
-install dependencies with ```npm install``` 
-run ```npm start```
+1. Clone this repo
+2. Install dependencies with ```npm install``` 
+3. Run ```npm start```
