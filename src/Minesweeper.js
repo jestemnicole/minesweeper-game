@@ -76,6 +76,21 @@ function clearBoard(){
         return b;
 }
 
+function getTextColor(char){
+    switch (char){
+        case 1 :
+            return '#18a324'
+        case 2 :
+            return '#ffd000'
+        case 3 : 
+            return '#e87502'
+        case 4 : 
+            return '#c90404'
+        default : 
+            return '#8a0101'
+    }
+}
+
 let bombLocations = generateBombLocations();
 let numBombNeighbors = generateNumBombNeighbors(bombLocations);
 
@@ -164,6 +179,8 @@ export default function Minesweeper () {
         return true; // only squares left are ones with bombs behind them
     }
 
+    
+
 
     function onSquarePressed(r, c) {
 
@@ -171,7 +188,7 @@ export default function Minesweeper () {
         if (board[r][c] === "🚩") return;
         let b = copyBoard();
          
-        // todo: add dramatic explosion when user clicks on a bomb
+        
         if (bombLocations[r][c] === 1){
             b[r][c] = "💣";
             setBoard(b);
@@ -219,7 +236,8 @@ export default function Minesweeper () {
                                     onContextMenu={(event) => toggleFlag(event, r, c)} 
                                     onClick={() => onSquarePressed(r, c)} 
                                     disabled={isGameOver ? true : false} 
-                                    className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c]}</button>);
+                                    style={{color : getTextColor(board[r][c]), fontWeight : 'bold'}}
+                                    className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c] !== 0 ? board[r][c] : ''}</button>);
             }
         
             rows.push(<div key={r} id={`${r}`}className="matrix-row">{buttons}</div>);
@@ -228,13 +246,14 @@ export default function Minesweeper () {
           return <div>{rows}</div>
     }
 
+   
     return (
         <div>
             <p data-testid="state of game" className={"title"}>
                 {isGameOver ? "GAME OVER" : isWon ? "YOU WIN" : "MINESWEEPER"}
             </p>
             <Board></Board>
-            <button onClick={reset}>Retry</button>
+            <button onClick={reset}> {isGameOver ? 'Retry' : 'Restart'}</button>
         </div>
     );
         
