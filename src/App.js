@@ -1,9 +1,9 @@
 import './App.css';
 import Minesweeper from './Minesweeper';
 
-function App() {
+function App() { //todo: add a short slideshow detailing how to play
   return (
-    <div className="App">
+    <div className="App"> 
       <Minesweeper/>
     </div>
   );
