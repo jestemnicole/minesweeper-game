@@ -4,31 +4,25 @@
     width: 30px;
     border-width: 1px;
     font-size: medium;
+    font-family: 'Times New Roman';
 }
 
 .matrix-button-filled {
     background-color: rgb(186, 186, 186);
-    height : 30px;
-    width: 30px;
-    border-width: 1px;
-    font-size: medium;
+    
 }
-
 
 .matrix-disabled-button {
     background-color: white;
-    height : 30px;
-    width: 30px;
-    border-width: 1px;
     cursor: not-allowed;
-    font-size: medium;
 }
 
 .matrix-row {
     display: flex;
     justify-content: center;
 }
-.matrix-button:hover {
+
+.matrix-button-unfilled:hover {
     background-color: gainsboro;
 }
 .title{
