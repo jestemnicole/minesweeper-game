@@ -16,14 +16,14 @@ const directions = [{r_offset : -1, c_offset : -1},  // top left
 
 
 
-function generateBombLocations(){
+function generateBombLocations(r, c){
     let bombLocations = Array.from(Array(NUM_ROWS), () => new Array(NUM_COLS).fill(0));
     let countBombs = 0; 
 
     while (countBombs < MAX_BOMBS){
     for (let row = 0; row < NUM_ROWS; row++){
         for (let col = 0; col < NUM_COLS; col++){
-            if (countBombs < MAX_BOMBS && Math.random() >= 0.9){
+            if (row != r && c != col && countBombs < MAX_BOMBS && Math.random() >= 0.9){
                 bombLocations[row][col] = 1;
                 countBombs++;
             }
@@ -91,28 +91,26 @@ function getTextColor(char){
     }
 }
 
-let bombLocations = generateBombLocations();
-let numBombNeighbors = generateNumBombNeighbors(bombLocations);
-
-export const getBombLocations = () => bombLocations;
-export const getNumBombNeighbors = () => numBombNeighbors;
+let bombLocations = null;
+let numBombNeighbors = null;
 
 export default function Minesweeper () {
 
     const [isGameOver, setIsGameOver] = useState(false);
     const [isWon, setIsWon] = useState(false);
     const [board, setBoard] = useState(clearBoard);
+    const [isFirstGuess, setIsFirstGuess] = useState(true);
 
     useEffect(() => {
         setIsWon(checkIfWon);
     }, [board]);
 
     function reset(){
-        bombLocations = generateBombLocations();
-        numBombNeighbors = generateNumBombNeighbors(bombLocations);
+        
         setIsGameOver(false);
         setIsWon(false);
         setBoard(clearBoard);
+        setIsFirstGuess(true);
     }
 
     function copyBoard(){
@@ -169,6 +167,8 @@ export default function Minesweeper () {
 
     function checkIfWon(){
 
+        if (bombLocations == null) return false;
+
         for (let i = 0; i < NUM_ROWS; i++){
             for (let j = 0; j < NUM_COLS; j++){
                 if (board[i][j] === "🚩" && bombLocations[i][j] !== 1) return false;
@@ -184,7 +184,14 @@ export default function Minesweeper () {
 
     function onSquarePressed(r, c) {
 
+        // make sure first square is never a bomb
        
+        if (isFirstGuess){
+            bombLocations = generateBombLocations(r, c);
+            numBombNeighbors = generateNumBombNeighbors(bombLocations);
+            setIsFirstGuess(false);
+        }
+
         if (board[r][c] === "🚩") return;
         let b = copyBoard();
          
@@ -237,7 +244,7 @@ export default function Minesweeper () {
                                     onClick={() => onSquarePressed(r, c)} 
                                     disabled={isGameOver ? true : false} 
                                     style={{color : getTextColor(board[r][c]), fontWeight : 'bold'}}
-                                    className={isGameOver ? "matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button-filled" : "matrix-button"}>{board[r][c] !== 0 ? board[r][c] : ''}</button>);
+                                    className={isGameOver ? "matrix-button matrix-disabled-button" : board[r][c] !== "" && board[r][c] !== "🚩" ? "matrix-button matrix-button-filled" : "matrix-button matrix-button-unfilled"}>{board[r][c] !== 0 ? board[r][c] : ''}</button>);
             }
         
             rows.push(<div key={r} id={`${r}`}className="matrix-row">{buttons}</div>);
